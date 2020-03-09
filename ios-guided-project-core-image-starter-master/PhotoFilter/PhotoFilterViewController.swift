@@ -6,7 +6,36 @@ import Photos
 class PhotoFilterViewController: UIViewController {
 
     //MARK: - Properties
-    private var originalImage: UIImage?
+    private var originalImage: UIImage? {
+        didSet {
+            
+            guard let originalImage = originalImage else {return}
+            var scaledSize = imageView.bounds.size
+            let scale = UIScreen.main.scale //1x 2x or 3x
+            
+            scaledSize = CGSize(width: scaledSize.width * scale, height: scaledSize.height * scale)
+            
+            
+            
+            scaledImage = originalImage.imageByScaling(toSize: scaledSize)
+            
+            
+            
+        }
+    }
+    
+    private var scaledImage: UIImage? {
+        didSet {
+            updateImage()
+            
+        }
+    }
+    //Image
+    //5000x3000 pixles
+    //Scale the image down so it fits in the bounds of the screen
+    
+    
+    
     private var context = CIContext(options: nil)
     
 	@IBOutlet weak var brightnessSlider: UISlider!
@@ -61,8 +90,8 @@ class PhotoFilterViewController: UIViewController {
     
     private func updateImage(){
         
-       if let originalImage = originalImage {
-          imageView.image = filterImage(originalImage)
+       if let scaledImage = scaledImage {
+          imageView.image = filterImage(scaledImage)
         } else {
             imageView.image = nil // allows us to clear out the image
         }
@@ -125,10 +154,16 @@ extension PhotoFilterViewController: UIImagePickerControllerDelegate, UINavigati
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         print("cancel")
+        picker.dismiss(animated: true)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         print("Picked image")
+        
+        if let image = info[.originalImage] as? UIImage{
+            originalImage = image
+        }
+        picker.dismiss(animated: true)
     }
     
 }
