@@ -68,12 +68,33 @@ class PhotoFilterViewController: UIViewController {
         }
         
     }
+    
+    
+    private func presentImagePickerController(){
+        
+        guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else {
+            return print("Error the phot library is unavailable")
+        }
+        
+        let imagePicker = UIImagePickerController()
+        
+        imagePicker.sourceType = .photoLibrary
+        
+        imagePicker.delegate = self
+        
+        present(imagePicker, animated: true)
+        
+        
+    }
 	 
 	// MARK: Actions
 	
 	@IBAction func choosePhotoButtonPressed(_ sender: Any) {
 		// TODO: show the photo picker so we can choose on-device photos
 		// UIImagePickerController + Delegate
+        
+        
+        presentImagePickerController()
 	}
 	
 	@IBAction func savePhotoButtonPressed(_ sender: UIButton) {
@@ -85,14 +106,29 @@ class PhotoFilterViewController: UIViewController {
 	
 	@IBAction func brightnessChanged(_ sender: UISlider) {
 
+        updateImage()
+        
 	}
 	
 	@IBAction func contrastChanged(_ sender: Any) {
+        updateImage()
 
 	}
 	
 	@IBAction func saturationChanged(_ sender: Any) {
+        updateImage()
 
 	}
 }
 
+extension PhotoFilterViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        print("cancel")
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        print("Picked image")
+    }
+    
+}
