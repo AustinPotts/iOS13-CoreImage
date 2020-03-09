@@ -62,7 +62,7 @@ class PhotoFilterViewController: UIViewController {
     private func updateImage(){
         
        if let originalImage = originalImage {
-       
+          imageView.image = filterImage(originalImage)
         } else {
             imageView.image = nil // allows us to clear out the image
         }
